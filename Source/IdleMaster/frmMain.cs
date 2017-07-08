@@ -106,11 +106,15 @@ namespace IdleMaster
         {
             foreach (var badge in CanIdleBadges.Where(b => !Equals(b, CurrentBadge)))
             {
-                if (badge.HoursPlayed >= 2 && badge.InIdle)
+                if (badge.InIdle)
                     badge.StopIdle();
+            }
 
-                if (badge.HoursPlayed < 2 && CanIdleBadges.Count(b => b.InIdle) < 30)
-                    badge.Idle();
+            Thread.Sleep(5000);
+
+            foreach (var badge in CanIdleBadges.Where(b => !Equals(b, CurrentBadge)))
+            {
+                badge.Idle();
             }
 
             RefreshGamesStateListView();
@@ -203,7 +207,8 @@ namespace IdleMaster
                     statistics.setRemainingCards((uint)CardsRemaining);
                     tmrStatistics.Enabled = true;
                     tmrStatistics.Start();
-                    if (Settings.Default.OnlyOneGameIdle)
+                    StartMultipleIdle();
+                    /*if (Settings.Default.OnlyOneGameIdle)
                     {
                         StartSoloIdle(CanIdleBadges.First());
                     }
@@ -235,7 +240,7 @@ namespace IdleMaster
                         }
                         
                         
-                    }
+                    }*/
                 }
                 else
                 {
@@ -861,7 +866,7 @@ namespace IdleMaster
                     await LoadBadgesAsync();
                     UpdateIdleProcesses();
 
-                    isMultipleIdle = CanIdleBadges.Any(b => b.HoursPlayed < 2 && b.InIdle);
+                    isMultipleIdle = CanIdleBadges.Any(b => b.InIdle);
                     if (isMultipleIdle)
                         TimeLeft = 360;
                 }

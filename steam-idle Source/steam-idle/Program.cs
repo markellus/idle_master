@@ -12,17 +12,24 @@ namespace steam_idle
         [STAThread]
         static void Main(string[] args)
         {
-            long appId = long.Parse(args[0]);
-            Environment.SetEnvironmentVariable("SteamAppId", appId.ToString());
-
-            if (!SteamAPI.Init())
+            try
             {
-                return;
-            }
+                long appId = long.Parse(args[0]);
+                Environment.SetEnvironmentVariable("SteamAppId", appId.ToString());
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMain(appId));
+                if (!SteamAPI.Init())
+                {
+                    return;
+                }
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new frmMain(appId));
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
